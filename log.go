@@ -1,8 +1,8 @@
 package main
 
 import (
-	"build"
 	"fmt"
+	build "github.com/ufo-project/minepool-backend/build"
 	"io"
 	"log"
 	"os"
