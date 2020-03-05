@@ -14,6 +14,7 @@ func (pool *Pool) updateWork() {
 	pool.ConnectWallet()
 	pool.Login()
 
+	Info.Println("Login Send")
 	for {
 		line, isPrefix, err := pool.connbuff.ReadLine()
 		if isPrefix {
