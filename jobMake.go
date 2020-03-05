@@ -17,6 +17,7 @@ func (pool *Pool) updateWork() {
 	Info.Println("Login Send")
 	for {
 		line, isPrefix, err := pool.connbuff.ReadLine()
+		Info.Println("Get Line Data")
 		if isPrefix {
 			Warning.Printf("Socket flood detected from %s", pool.WalletUrl)
 
