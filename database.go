@@ -98,11 +98,11 @@ type MinerInfo_t struct {
 }
 
 type AddrBalance_t struct {
-	Id       bson.ObjectId `bson:"_id"`
-	Username string        `bson:"uname"`
-	Balance   int64         `bson:"balance"`
+	Id         bson.ObjectId `bson:"_id"`
+	Username   string        `bson:"uname"`
+	Balance    int64         `bson:"balance"`
 	UpdateTime int64         `bson:"updatetime"`
-	Worker   string        `bson:"worker"`
+	Worker     string        `bson:"worker"`
 }
 
 type SendTx_t struct {
@@ -318,14 +318,16 @@ func (pool *Pool) UpdateAddrBalance(session *mgo.Session) int64 {
 				}
 
 				if len(item) == 0 {
-					oneaddrbalance := &AddrBalance_t{Id: bson.NewObjectId(), Username: username, Balance : v, UpdateTime: time.Now().Unix(), Worker: workername}
+					oneaddrbalance := &AddrBalance_t{Id: bson.NewObjectId(), Username: username, Balance: v, UpdateTime: time.Now().Unix(), Worker: workername}
+					Info.Printf("Update Balance, UserName:%s, Balance:%d, Delta:%d \n", username, v, v)
 					err = addrbalance_t.Insert(oneaddrbalance)
 					if err != nil {
 						Warning.Println("UpdateAddrBalance:addrbalance_t collection insert error:", err.Error())
 						continue
 					}
-				} else if len(item) ==1 {
-					data := bson.M{"$set": bson.M{"balance": item[0].Balance+v,"updatetime":time.Now().Unix()}}
+				} else if len(item) == 1 {
+					data := bson.M{"$set": bson.M{"balance": item[0].Balance + v, "updatetime": time.Now().Unix()}}
+					Info.Printf("Update Balance, UserName:%s, Balance:%d, Delta:%d \n", username, item[0].Balance+v, v)
 					err := addrbalance_t.UpdateId(item[0].Id, data)
 					if err != nil {
 						Warning.Println("UpdateAddrBalance:addrbalance_t.Update balance:", item[0].Balance+v, "err:", err.Error())
@@ -355,17 +357,20 @@ func (pool *Pool) SendReward(session *mgo.Session) int64 {
 		return 0
 	} else if len(balances) > 0 {
 		sendtx_t := session.DB(pool.cfg.MongoDB.DBname).C(pool.cfg.MongoDB.SendTx)
-		for _,item := range balances {
+		for _, item := range balances {
 			txid, err := sendTx(item.Balance, item.Username)
 			if err != nil {
 				Warning.Println("sendReward:sendTx to:", item.Username, ",amount:", item.Balance, "error:", err.Error())
 				continue
 			}
-			data := bson.M{"$set": bson.M{"balance": 0,"updatetime":time.Now().Unix()}}
+			Info.Printf("Send Tx, UserName:%s, Balance:%d \n", item.Username, item.Balance)
+			data := bson.M{"$set": bson.M{"balance": 0, "updatetime": time.Now().Unix()}}
 			err = addrbalance_t.UpdateId(item.Id, data)
 			if err != nil {
 				Warning.Println("sendReward:addrbalance_t.Update balance:", 0, "err:", err.Error())
 			}
+			Info.Printf("Update Balance, UserName:%s, Balance:%d \n", item.Username, 0)
+
 			sendonetx := &SendTx_t{Id: bson.NewObjectId(), TxId: txid, Username: item.Username, Amount: item.Balance, SendTime: time.Now().Unix(), TxState: 0, Worker: item.Worker}
 			err = sendtx_t.Insert(sendonetx)
 			Info.Println("sendReward:sendtx_t. before Insert usernanme:", item.Username, ",workname:", item.Worker, ",amount:", item.Balance)
@@ -449,6 +454,8 @@ func (pool *Pool) pushMinerInfo(session *mgo.Session, statTime int64) {
 					reward = v * totalReward / int64(totalShare)
 				}
 				minerinfo := &MinerInfo_t{Id: bson.NewObjectId(), Username: username, Reward: reward, StatTime: statTime + cfg.RewardPeriod, Worker: workername}
+
+				Info.Printf("User:%s, Reward:%d\n", username, reward)
 				err := minerinfo_t.Insert(minerinfo)
 				if err != nil {
 					Warning.Println("writemdb MinerInfo_t error:", err)

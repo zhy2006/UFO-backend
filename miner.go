@@ -190,11 +190,11 @@ func (miner *Miner) submitHandle(req *MinerRequest) error {
 		Info.Println("don't Authorize")
 		return errors.New("don't Authorize")
 	}
+	Info.Printf("SubmitHandle, %s \n", miner.workername)
 
 	var jobID, nonce string
 	jobID = req.JobID
 	nonce = req.Nonce
-
 
 	nonceStr := miner.ENonce + strings.ToLower(nonce)
 	if len(nonceStr) != 16 {
