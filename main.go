@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	build "github.com/ufo-project/minepool-backend/build"
 	//"fmt"
 )
@@ -88,24 +89,43 @@ func InitPool() {
 	}
 }
 
+var run = flag.Bool("run", false, "run mining pool")
+var reward = flag.Bool("reward", false, "calc and send miner reward")
+
 func main() {
+	flag.Parse()
 	PreparePool()
 	InitPool()
-	go gPool.updateWork()
 
-	<-gPool.walletReady
-	go gPool.ListenTCP()
+	if *run {
+		Info.Println("Ready for pool running")
+		go gPool.updateWork()
+		<-gPool.walletReady
+		go gPool.ListenTCP()
+		Info.Println("pool is running...")
 
-	Info.Println("pool is running...")
+		go gPool.PushShareService()
+		go gPool.PrintDailyShareServer()
+		gPool.httpServer()
 
-	go gPool.PushShareService()
-	go gPool.PrintDailyShareServer()
-	go gPool.CalcUserReward()
-	go gPool.SendRewardToUsers()
-	go gPool.CheckTxState()
-	gPool.httpServer()
+	} else if *reward {
+		Info.Println("Ready for reward running")
+		go gPool.CalcUserReward()
+		go gPool.SendRewardToUsers()
+		gPool.CheckTxState()
+	} else {
+		go gPool.updateWork()
+		<-gPool.walletReady
+		go gPool.ListenTCP()
+		Info.Println("pool is running...")
 
+		go gPool.PushShareService()
+		go gPool.PrintDailyShareServer()
+		go gPool.CalcUserReward()
+		go gPool.SendRewardToUsers()
+		go gPool.CheckTxState()
+		gPool.httpServer()
+	}
 	gPool.closeDB()
-	Warning.Println("exit pool.")
-
+	Warning.Println("exit.")
 }
