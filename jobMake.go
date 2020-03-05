@@ -38,9 +38,11 @@ func (pool *Pool) updateWork() {
 				continue
 			}
 			if resp.Method == "job" {
+				Info.Println("Method Job")
 				pool.handleGetWork(resp.Id, resp.PrevHash, resp.Input, resp.Height, resp.NBits)
 
 			} else if resp.Method == "result" {
+				Info.Println("Method Result")
 				if resp.Id == "login" {
 					Info.Println("login")
 					gPool.ForkHeight = resp.ForkHeight
