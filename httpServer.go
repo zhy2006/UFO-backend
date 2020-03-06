@@ -805,19 +805,19 @@ func QueryPowerDiffInfoHandler(res http.ResponseWriter, req *http.Request) {
 func (pool *Pool) httpServer() {
 
 	r := mux.NewRouter()
-	r.HandleFunc("/share/{name}", QueryShareHandler)
-	r.HandleFunc("/ip/{name}", QueryIPHandler)
-	r.HandleFunc("/worker/{name}", QueryWorkerHandler)
-	r.HandleFunc("/users/{name}", QueryUsersOfWorkerHandler)
-	r.HandleFunc("/rewards/{name}", QueryRewardsHandler)
-	r.HandleFunc("/user", QueryUserHandler)
-	r.HandleFunc("/totalinfo", QueryTotalInfoHandler)
-	r.HandleFunc("/blocksinfo", QueryBlocksInfoHandler)
-	r.HandleFunc("/rewardsinfo", QueryRewardsInfoHandler)
-	r.HandleFunc("/powerdiffinfo", QueryPowerDiffInfoHandler)
-	r.HandleFunc("/minerinfo/{name}", QueryMinerInfoHandler)
-	r.HandleFunc("/minerrewardinfo/{name}", QueryWorkerHanfHourInfoHandler)
-	http.Handle("/api", r)
+	r.HandleFunc("/api/share/{name}", QueryShareHandler)
+	r.HandleFunc("/api/ip/{name}", QueryIPHandler)
+	r.HandleFunc("/api/worker/{name}", QueryWorkerHandler)
+	r.HandleFunc("/api/users/{name}", QueryUsersOfWorkerHandler)
+	r.HandleFunc("//apirewards/{name}", QueryRewardsHandler)
+	r.HandleFunc("/api/user", QueryUserHandler)
+	r.HandleFunc("/api/totalinfo", QueryTotalInfoHandler)
+	r.HandleFunc("/api/blocksinfo", QueryBlocksInfoHandler)
+	r.HandleFunc("/api/rewardsinfo", QueryRewardsInfoHandler)
+	r.HandleFunc("/api/powerdiffinfo", QueryPowerDiffInfoHandler)
+	r.HandleFunc("/api/minerinfo/{name}", QueryMinerInfoHandler)
+	r.HandleFunc("/api/minerrewardinfo/{name}", QueryWorkerHanfHourInfoHandler)
+	http.Handle("/", r)
 
 	httpServer := &http.Server{
 		Addr:           pool.cfg.HttpIPPort,
