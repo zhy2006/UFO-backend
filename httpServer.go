@@ -817,7 +817,7 @@ func (pool *Pool) httpServer() {
 	r.HandleFunc("/powerdiffinfo", QueryPowerDiffInfoHandler)
 	r.HandleFunc("/minerinfo/{name}", QueryMinerInfoHandler)
 	r.HandleFunc("/minerrewardinfo/{name}", QueryWorkerHanfHourInfoHandler)
-	http.Handle("/", r)
+	http.Handle("/api", r)
 
 	httpServer := &http.Server{
 		Addr:           pool.cfg.HttpIPPort,
