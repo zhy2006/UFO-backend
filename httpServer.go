@@ -809,7 +809,7 @@ func (pool *Pool) httpServer() {
 	r.HandleFunc("/api/ip/{name}", QueryIPHandler)
 	r.HandleFunc("/api/worker/{name}", QueryWorkerHandler)
 	r.HandleFunc("/api/users/{name}", QueryUsersOfWorkerHandler)
-	r.HandleFunc("//apirewards/{name}", QueryRewardsHandler)
+	r.HandleFunc("/api/apirewards/{name}", QueryRewardsHandler)
 	r.HandleFunc("/api/user", QueryUserHandler)
 	r.HandleFunc("/api/totalinfo", QueryTotalInfoHandler)
 	r.HandleFunc("/api/blocksinfo", QueryBlocksInfoHandler)
