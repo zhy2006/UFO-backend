@@ -125,9 +125,9 @@ func QueryWorkerHandler(res http.ResponseWriter, req *http.Request) {
 }
 
 type WorkerUsers struct {
-	Workername    string   `json:"workername"`
-	UserCount int      `json:"userCount"`
-	Users     []string `json:"users"`
+	Workername string   `json:"workername"`
+	UserCount  int      `json:"userCount"`
+	Users      []string `json:"users"`
 }
 
 func StringsContains(array []string, val string) (index int) {
@@ -156,7 +156,7 @@ func QueryUsersOfWorkerHandler(res http.ResponseWriter, req *http.Request) {
 		gPool.minersLock.RLock()
 		for miner, _ := range gPool.miners {
 			if miner.workername == workername {
-				if StringsContains(user.Users,miner.username) == -1 {
+				if StringsContains(user.Users, miner.username) == -1 {
 					user.Users = append(user.Users, miner.username)
 					user.UserCount++
 				}
@@ -269,7 +269,7 @@ func QueryTotalInfoHandler(res http.ResponseWriter, req *http.Request) {
 
 	currdiff, _ := strconv.ParseFloat(gPool.LastJob.netDiffStr, 64)
 	totalinfo.CurrentDiff = fmt.Sprintf("%f", float64(currdiff*256))
-	totalpower = math.Pow(2,24) * currdiff / 60 / 1024 /1024*256
+	totalpower = math.Pow(2, 24) * currdiff / 60 / 1024 / 1024 * 256
 	totalinfo.TotalPower = fmt.Sprintf("%fM/s", totalpower)
 	totalinfo.CurrentHeight = gPool.height - 1
 	totalinfo.TotalRewards = fmt.Sprintf("%.02f", float64(int64(blockcount)*cfg.OneBlockReward/100000000))
@@ -780,7 +780,7 @@ func QueryPowerDiffInfoHandler(res http.ResponseWriter, req *http.Request) {
 		var powerdiffinfo PowerDiffInfo
 
 		powerdiffinfo.Diff = fmt.Sprintf("%f", float64(totaldiff*256)/float64(totalshares))
-		power := math.Pow(2,24) * float64(totaldiff)/float64(totalshares) / 60 / 1024 /1024*256
+		power := math.Pow(2, 24) * float64(totaldiff) / float64(totalshares) / 60 / 1024 / 1024 * 256
 		powerdiffinfo.Power = fmt.Sprintf("%.02f", float64(power))
 		powerdiffinfo.TimeStamp = timeNumber
 
@@ -805,18 +805,18 @@ func QueryPowerDiffInfoHandler(res http.ResponseWriter, req *http.Request) {
 func (pool *Pool) httpServer() {
 
 	r := mux.NewRouter()
-	r.HandleFunc("/share/{name}", QueryShareHandler)
-	r.HandleFunc("/ip/{name}", QueryIPHandler)
-	r.HandleFunc("/worker/{name}", QueryWorkerHandler)
-	r.HandleFunc("/users/{name}", QueryUsersOfWorkerHandler)
-	r.HandleFunc("/rewards/{name}", QueryRewardsHandler)
-	r.HandleFunc("/user", QueryUserHandler)
-	r.HandleFunc("/totalinfo", QueryTotalInfoHandler)
-	r.HandleFunc("/blocksinfo", QueryBlocksInfoHandler)
-	r.HandleFunc("/rewardsinfo", QueryRewardsInfoHandler)
-	r.HandleFunc("/powerdiffinfo", QueryPowerDiffInfoHandler)
-	r.HandleFunc("/minerinfo/{name}", QueryMinerInfoHandler)
-	r.HandleFunc("/minerrewardinfo/{name}", QueryWorkerHanfHourInfoHandler)
+	r.HandleFunc("/backend/share/{name}", QueryShareHandler)
+	r.HandleFunc("/backend/ip/{name}", QueryIPHandler)
+	r.HandleFunc("/backend/worker/{name}", QueryWorkerHandler)
+	r.HandleFunc("/backend/users/{name}", QueryUsersOfWorkerHandler)
+	r.HandleFunc("/backend/rewards/{name}", QueryRewardsHandler)
+	r.HandleFunc("/backend/user", QueryUserHandler)
+	r.HandleFunc("/backend/totalinfo", QueryTotalInfoHandler)
+	r.HandleFunc("/backend/blocksinfo", QueryBlocksInfoHandler)
+	r.HandleFunc("/backend/rewardsinfo", QueryRewardsInfoHandler)
+	r.HandleFunc("/backend/powerdiffinfo", QueryPowerDiffInfoHandler)
+	r.HandleFunc("/backend/minerinfo/{name}", QueryMinerInfoHandler)
+	r.HandleFunc("/backend/minerrewardinfo/{name}", QueryWorkerHanfHourInfoHandler)
 	http.Handle("/", r)
 
 	httpServer := &http.Server{
