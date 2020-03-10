@@ -161,10 +161,11 @@ func (miner *Miner) handleTCPMessage(req *MinerRequest) error {
 	case "mining_authorize", "mining.authorize":
 		if req.Method == "mining_authorize" {
 			miner.minerProto = 1
+			err = miner.authorizeHandle(req)
 		} else {
 			miner.minerProto = 2
+			err = miner.authorizeHandleV2(req)
 		}
-		err = miner.authorizeHandle(req)
 	case "mining_submit", "mining.submit":
 		if req.Method == "mining_submit" {
 			miner.minerProto = 1
