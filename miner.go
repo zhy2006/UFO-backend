@@ -148,11 +148,11 @@ func (miner *Miner) handleTCPMessage(req *MinerRequest) error {
 	Info.Println("handleTCPMessage.")
 	var err error
 	switch req.Method {
-	case "mining_subscribe":
+	case "mining_subscribe", "mining.subscribe":
 		err = miner.subscribeHandle(req)
-	case "mining_authorize":
+	case "mining_authorize", "mining.authorize":
 		err = miner.authorizeHandle(req)
-	case "mining_submit":
+	case "mining_submit", "mining.submit":
 		err = miner.submitHandle(req)
 	default:
 		Info.Println(miner.workername, "  ", miner.IP, " miner reqest "+req.Method+" not implemented!")
