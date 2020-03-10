@@ -434,7 +434,7 @@ func (miner *Miner) pool2MinerTrue(code int, id string) error {
 
 func (miner *Miner) pool2MinerTrueV2(res string, id string) error {
 	msg := ""
-	msg = fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"id\":%s,\"result\":%s,\"method\":\"mining.authorize_result\"}\n", id, res)
+	msg = fmt.Sprintf("{\"id\":%s,\"result\":%s,\"error\":null}\n", id, res)
 
 	return miner.SendMessageToMiner(msg)
 }
@@ -445,7 +445,7 @@ func (miner *Miner) pool2SubmitMinerTrue(id string) error {
 	if miner.minerProto == 1 {
 		msg = fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"id\":\"%s\",\"code\":0,\"method\":\"mining_submit_result\"}\n", id)
 	} else {
-		msg = fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"id\":\"%s\",\"result\":true}\n", id)
+		msg = fmt.Sprintf("{\"id\":\"%s\",\"result\":true,\"error\":null}\n", id)
 	}
 
 	return miner.SendMessageToMiner(msg)
