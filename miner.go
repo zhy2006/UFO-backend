@@ -479,7 +479,7 @@ func (miner *Miner) SubscribeResponseV2(id string, ENonce string) error {
 	Info.Println("SubscribeResponse V2.")
 
 	msg := fmt.Sprintf(
-		"{ \"id\":%s,\"result\": [[\"mining.notify\",\"%s\",\"UFO-Pool/1.0.0\"],\"%s\",8],\"error\": null }\n",
+		"{ \"id\":%s,\"result\": [[\"mining.notify\",\"%s\",\"UFO-Pool/1.0.0\"],\"%s\",0],\"error\": null }\n",
 		id,
 		ENonce,
 		ENonce,
