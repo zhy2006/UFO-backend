@@ -325,7 +325,7 @@ func (miner *Miner) subscribeHandle(req *MinerRequest) error {
 	if miner.minerProto == 1 {
 		err = miner.SubscribeResponse(req.Id, miner.ENonce)
 	} else {
-		err = miner.SubscribeResponseV2(miner.ENonce, miner.ENonce)
+		err = miner.SubscribeResponseV2(req.Id, miner.ENonce)
 	}
 
 	if err != nil {
@@ -411,7 +411,7 @@ func (miner *Miner) authorizeHandleV2(req *MinerRequest) error {
 
 	notifyStr := ""
 	notifyStr = fmt.Sprintf(
-		"{\"id\":\"1\",,\"method\":\"mining.notify\",\"params\": [\"%s\",\"%s\",\"%s\",true]}\n",
+		"{\"method\":\"mining.notify\",\"params\": [\"%s\",\"%s\",\"%s\",true]}\n",
 		miner.pool.LastJob.Id,
 		miner.pool.LastJob.PrevHash,
 		miner.pool.LastJob.Input,
@@ -478,8 +478,9 @@ func (miner *Miner) SubscribeResponseV2(id string, ENonce string) error {
 	Info.Println("SubscribeResponse V2.")
 
 	msg := fmt.Sprintf(
-		"{ \"result\": [[\"mining.notify\",\"%s\",\"UFO-Pool/1.0.0\"],\"%s\"	],\"error\": null }",
+		"{ \"id\":%s,\"result\": [[\"mining.notify\",\"%s\",\"UFO-Pool/1.0.0\"],\"%s\"	],\"error\": null }",
 		id,
+		ENonce,
 		ENonce,
 	)
 
@@ -498,7 +499,7 @@ func (miner *Miner) SetDifficulty() error {
 	if miner.minerProto == 1 {
 		msg = fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"difficulty\":\"%s\",\"method\":\"mining_set_difficulty\"}\n", diffStr)
 	} else {
-		msg = fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"id\":\"1\",\"method\":\"mining.set_difficulty\",\"params\":[%s]}\n", diffStr)
+		msg = fmt.Sprintf("{\"jsonrpc\":\"2.0\",\"method\":\"mining.set_difficulty\",\"params\":[%s]}\n", diffStr)
 	}
 
 	return miner.SendMessageToMiner(msg)
